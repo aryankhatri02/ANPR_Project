@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ANPR Integration</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+    section {
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ANPR Integration</h1>
+  </header>
+
+  <section>
+    <h2>Automatic Number Plate Recognition (ANPR)</h2>
+    <input type="file" id="fileInput">
+    <button onclick="recognizePlate()">Recognize Plate</button>
+    <div id="result"></div>
+  </section>
+
+  <script>
+    // Function to recognize plate using recognize_plate function on the server
+    function recognizePlate() {
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+      if (!file) {
+        alert('Please select an image file.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('image', file);
+
+      fetch('/recognize_plate', {
+        method: 'POST',
+        body: formData,
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Process the JSON response
+        console.log(data);
+        const resultDiv = document.getElementById('result');
+        if (data && data !== "Plate not recognized") {
+          resultDiv.innerHTML = `License Plate: ${data}`;
+        } else {
+          resultDiv.innerHTML = 'No license plate recognized.';
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while processing the image.');
+      });
+    }
+  </script>
+</body>
+</html>
