@@ -30,9 +30,17 @@ def recognize_plate(image_file):
     (x2, y2) = (np.max(x), np.max(y))
     cropped_image = gray[x1:x2+1, y1:y2+1]
 
+    # Apply thresholding
+    _, thresh = cv2.threshold(cropped_image, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+
     reader = easyocr.Reader(['en'])
-    result = reader.readtext(cropped_image)
+    result = reader.readtext(thresh)
+    
+    
+    # Post-process OCR result if needed
     if result:
-        return result[0][-2]
+        plate_text = result[0][-2]  # Extract text from OCR result
+        # You can do additional post-processing here if needed
+        return plate_text
     else:
         return "Plate not recognized"

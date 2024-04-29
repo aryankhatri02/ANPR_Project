@@ -30,7 +30,8 @@
     <h2>Automatic Number Plate Recognition (ANPR)</h2>
     <input type="file" id="fileInput">
     <button onclick="recognizePlate()">Recognize Plate</button>
-    <div id="result"></div>
+    <div id="result">
+    </div>
   </section>
 
   <script>
@@ -53,10 +54,11 @@
       .then(response => response.json())
       .then(data => {
         // Process the JSON response
-        console.log(data);
+        console.log(`data is printed`)
+        console.log(data)
         const resultDiv = document.getElementById('result');
-        if (data && data !== "Plate not recognized") {
-          resultDiv.innerHTML = `License Plate: ${data}`;
+        if (data && data.plate_number) {
+          resultDiv.innerHTML = `License Plate: ${data.plate_number}`;
         } else {
           resultDiv.innerHTML = 'No license plate recognized.';
         }

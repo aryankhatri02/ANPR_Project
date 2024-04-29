@@ -16,7 +16,8 @@ def recognize_plate_endpoint():
 
     image_file = request.files['image']
     plate_number = recognize_plate(image_file)
-
+    print('asndasdkjashdkjasbdkjas')
+    print(plate_number)
     return jsonify({'plate_number': plate_number}), 200
 
 if __name__ == '__main__':
