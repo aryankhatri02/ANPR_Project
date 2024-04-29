@@ -107,6 +107,7 @@
           <input type="file" id="fileInput" name="image">
         </div>
         <button type="button" class="btn" onclick="recognizePlate()">Recognize Plate</button>
+        <button type="button" class="btn" onclick="viewParking()">View Parking</button>
       </form>
     </div>
   </section>
@@ -156,6 +157,9 @@
         console.error('Error:', error);
         alert('An error occurred while processing the image.');
       });
+      function viewParking() {
+        window.location.href = 'display_data.html';
+      }
     }
   </script>
 </body>
