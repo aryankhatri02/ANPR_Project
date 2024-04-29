@@ -9,6 +9,7 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
+      background-color: #f4f4f4;
     }
     header {
       background-color: #333;
@@ -18,6 +19,66 @@
     }
     section {
       padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      max-width: 400px;
+      width: 100%;
+    }
+    .card h2 {
+      color: #333;
+      margin-top: 0;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #555;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .form-group input[type="file"] {
+      padding-top: 15px;
+    }
+    .btn {
+      background-color: #333;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background-color: #555;
+    }
+    #result {
+      margin-top: 20px;
+    }
+    .result-card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      max-width: 400px;
+      width: 100%;
+      margin: 20px auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
   </style>
 </head>
@@ -27,17 +88,38 @@
   </header>
 
   <section>
-    <h2>Automatic Number Plate Recognition (ANPR)</h2>
-    <input type="file" id="fileInput">
-    <button onclick="recognizePlate()">Recognize Plate</button>
-    <div id="result">
+    <div class="card">
+      <h2>Automatic Number Plate Recognition (ANPR)</h2>
+      <form id="anprForm" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" placeholder="Enter your username">
+        </div>
+        <div class="form-group">
+          <label for="status">Status:</label>
+          <select id="status" name="status">
+            <option value="IN">IN</option>
+            <option value="OUT">OUT</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="fileInput">Choose an image:</label>
+          <input type="file" id="fileInput" name="image">
+        </div>
+        <button type="button" class="btn" onclick="recognizePlate()">Recognize Plate</button>
+      </form>
     </div>
   </section>
+
+  <div id="result" class="result-card">
+  </div>
 
   <script>
     // Function to recognize plate using recognize_plate function on the server
     function recognizePlate() {
       const fileInput = document.getElementById('fileInput');
+      const usernameInput = document.getElementById('username');
+      const statusInput = document.getElementById('status');
       const file = fileInput.files[0];
       if (!file) {
         alert('Please select an image file.');
@@ -46,6 +128,8 @@
 
       const formData = new FormData();
       formData.append('image', file);
+      formData.append('username', usernameInput.value);
+      formData.append('status', statusInput.value);
 
       fetch('/recognize_plate', {
         method: 'POST',
@@ -54,13 +138,18 @@
       .then(response => response.json())
       .then(data => {
         // Process the JSON response
-        console.log(`data is printed`)
-        console.log(data)
+        console.log('data is printed');
+        console.log(data);
         const resultDiv = document.getElementById('result');
         if (data && data.plate_number) {
-          resultDiv.innerHTML = `License Plate: ${data.plate_number}`;
+          resultDiv.innerHTML = `
+            <h2>Recognition Result</h2>
+            <p><strong>Username:</strong> ${data.username}</p>
+            <p><strong>Status:</strong> ${data.status}</p>
+            <p><strong>License Plate:</strong> ${data.plate_number}</p>
+          `;
         } else {
-          resultDiv.innerHTML = 'No license plate recognized.';
+          resultDiv.innerHTML = '<p>No license plate recognized.</p>';
         }
       })
       .catch(error => {
