@@ -107,7 +107,7 @@
           <input type="file" id="fileInput" name="image">
         </div>
         <button type="button" class="btn" onclick="recognizePlate()">Recognize Plate</button>
-        <button type="button" class="btn" onclick="viewParking()">View Parking</button>
+        <button type="button" class="btn" ><a href="http://127.0.0.1:5000/display_data">View Parking</a></button>
       </form>
     </div>
   </section>
@@ -157,9 +157,21 @@
         console.error('Error:', error);
         alert('An error occurred while processing the image.');
       });
-      function viewParking() {
-        window.location.href = 'display_data.html';
-      }
+    }
+    function viewParking() {
+      fetch('/display_data', {
+        method: 'GET'
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        // Handle the response here if needed
+      })
+      .catch(error => {
+        console.error('There was a problem with your fetch operation:', error);
+        // Handle errors here
+      });
     }
   </script>
 </body>
